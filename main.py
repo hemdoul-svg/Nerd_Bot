@@ -110,5 +110,5 @@ async def help(interaction: discord.Interaction):
 # ==============================
 
 
-client.run(token)
+client.run(TOKEN)
 
