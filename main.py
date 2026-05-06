@@ -31,7 +31,7 @@ tree = app_commands.CommandTree(client)
 async def on_ready():
     await tree.sync()
     print(f"Bot connecté en tant que {client.user}")
-    print("Commandes synchronisées")
+
 # ==============================
 # COMMANDE /regles
 # ==============================
@@ -106,45 +106,106 @@ async def help(interaction: discord.Interaction):
 
     await interaction.response.send_message(message)
 
-#===============================
-# Commande: /clash
-#===============================
+# ==============================
+# CLASH NERD 1v1 AVEC POPUP
+# ==============================
 
-@tree.command(name="clash", description="Clash nerd entre 2 joueurs ⚔️")
-async def clash(
-    interaction: discord.Interaction,
-    opponent: discord.Member,
-    phrase1: str,
-    phrase2: str
-):
+clash_data = {}
 
-    def style(text):
-        prefixes = ["DEBUG:", "AI SAYS:", "KERNEL:"]
-        suffixes = ["💀", "🤖", "⚡"]
-        return f"{random.choice(prefixes)} {text} {random.choice(suffixes)}"
+# ---------- MODAL ----------
+class ClashModal(discord.ui.Modal):
 
-    c1 = style(phrase1)
-    c2 = style(phrase2)
+    def __init__(self, duel_id, user):
+        super().__init__(title="⚔️ Ton clash nerd")
+        self.duel_id = duel_id
+        self.user = user
 
-    score1 = calculate_score(phrase1)
-    score2 = calculate_score(phrase2)
+        self.phrase = discord.ui.TextInput(
+            label="Ton clash",
+            placeholder="Écris ton meilleur roast nerd...",
+            max_length=200
+        )
 
-    if score1 > score2:
-        winner = interaction.user
-    elif score2 > score1:
-        winner = opponent
-    else:
-        winner = None
+        self.add_item(self.phrase)
 
-    result = "🤝 ÉGALITÉ !" if winner is None else f"🏆 Gagnant : {winner.mention}"
+    async def on_submit(self, interaction: discord.Interaction):
+
+        duel = clash_data[self.duel_id]
+        duel["phrases"][interaction.user.id] = self.phrase.value
+
+        await interaction.response.send_message("✅ Clash enregistré !", ephemeral=True)
+
+        # Si les 2 joueurs ont répondu
+        if len(duel["phrases"]) == 2:
+
+            user1, user2 = duel["players"]
+
+            p1 = duel["phrases"][user1.id]
+            p2 = duel["phrases"][user2.id]
+
+            score1 = calculate_score(p1)
+            score2 = calculate_score(p2)
+
+            if score1 > score2:
+                winner = user1
+            elif score2 > score1:
+                winner = user2
+            else:
+                winner = None
+
+            result = "🤝 ÉGALITÉ !" if winner is None else f"🏆 {winner.mention} gagne !"
+
+            await interaction.channel.send(
+                f"⚔️ **CLASH NERD FINAL** ⚔️\n\n"
+                f"{user1.mention} : {p1} ({score1} pts)\n"
+                f"{user2.mention} : {p2} ({score2} pts)\n\n"
+                f"{result}"
+            )
+
+            # reset duel
+            del clash_data[self.duel_id]
+
+
+# ---------- BOUTON ----------
+class ClashView(discord.ui.View):
+
+    def __init__(self, duel_id, challenger, opponent):
+        super().__init__(timeout=60)
+        self.duel_id = duel_id
+        self.challenger = challenger
+        self.opponent = opponent
+
+    @discord.ui.button(label="Accepter le duel ⚔️", style=discord.ButtonStyle.green)
+    async def accept(self, interaction: discord.Interaction, button: discord.ui.Button):
+
+        if interaction.user != self.opponent:
+            return await interaction.response.send_message("❌ Ce n'est pas ton duel", ephemeral=True)
+
+        await interaction.response.send_message("⚔️ Duel accepté ! Check tes popups", ephemeral=True)
+
+        # popup challenger
+        await self.challenger.send_modal(ClashModal(self.duel_id, self.challenger))
+
+        # popup opponent
+        await interaction.followup.send_modal(ClashModal(self.duel_id, self.opponent))
+
+
+# ---------- COMMANDE ----------
+@tree.command(name="clash", description="Clash nerd 1v1 ⚔️")
+async def clash(interaction: discord.Interaction, opponent: discord.Member):
+
+    duel_id = str(interaction.id)
+
+    clash_data[duel_id] = {
+        "players": [interaction.user, opponent],
+        "phrases": {}
+    }
 
     await interaction.response.send_message(
-        f"⚔️ **CLASH NERD DUEL** ⚔️\n\n"
-        f"👤 {interaction.user.mention} : {c1} — {score1} pts\n"
-        f"👤 {opponent.mention} : {c2} — {score2} pts\n\n"
-        f"{result}"
+        f"⚔️ {interaction.user.mention} défie {opponent.mention} !\n"
+        f"Clique sur le bouton pour accepter !",
+        view=ClashView(duel_id, interaction.user, opponent)
     )
-
 
 
 #===============================
