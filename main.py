@@ -10,7 +10,7 @@ import json
 import os
 from dotenv import load_dotenv # ça sert à garder le Token en .env .
 load_dotenv ()
-token= os.getenv('TOKEN')
+token= os.getenv("TOKEN")
 
 # ==============================
 # CONFIGURATION DU BOT
