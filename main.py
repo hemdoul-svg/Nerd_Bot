@@ -31,7 +31,7 @@ tree = app_commands.CommandTree(client)
 async def on_ready():
     await tree.sync()
     print(f"Bot connecté en tant que {client.user}")
-
+    print("Commandes synchronisées")
 # ==============================
 # COMMANDE /regles
 # ==============================
