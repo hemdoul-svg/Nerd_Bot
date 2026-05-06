@@ -72,8 +72,8 @@ async def fact(interaction: discord.Interaction):
         "Minecraft a été créé par Notch",
         "Le premier disque dur faisait plus de 1 tonne",
         "Le premier site web existe encore",
-        "Le langage Python a été créé en 1991"
-        "Lamig a déja était gentil avec quelqu'un ,c'était en 2020...",
+        "Le langage Python a été créé en 1991",
+        "Lamig a déja était gentil avec quelqu'un ,c'était en 2020..."
     ]
 
     await interaction.response.send_message(random.choice(facts))
