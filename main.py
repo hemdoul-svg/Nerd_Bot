@@ -95,7 +95,8 @@ async def fact(interaction: discord.Interaction):
     "Les GPU sont plus rapides que les CPU pour l’IA",
     "Le premier ordinateur occupait une pièce entière",
     "Lamig a déjà été gentil avec quelqu'un, c'était en 2020...",
-    "Le creeper était sensé etre un creeper"
+    "Le creeper était sensé etre un cochon.",
+    "Discord a était creer en 2015"
 ]
     await interaction.response.send_message(random.choice(facts))
 
