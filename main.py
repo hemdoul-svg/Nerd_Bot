@@ -21,7 +21,9 @@ if TOKEN is None:
 nerd_words = [
     "python", "bug", "cpu", "ram", "code", "debug",
     "linux", "algorithm", "server", "gpu", "compile",
-    "windows", "ordinateur"
+    "windows", "ordinateur","theoreme","pythagore","Thales","RTX","carte graphique",
+    "temple os","os","bug","racine carre","serveur","algorithme","java script","nerd",
+    "geek","Minecraft"
 ]
 
 def calculate_score(text):
