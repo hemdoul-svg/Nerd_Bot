@@ -86,7 +86,7 @@ async def iq(interaction: discord.Interaction):
 
 @tree.command(name="fact", description="Fact geek")
 async def fact(interaction: discord.Interaction):
-    facts = [
+      facts = [
     "Le premier bug informatique était un insecte 🐛",
     "Minecraft a été créé par Notch",
     "Le langage Python date de 1991",
@@ -94,7 +94,8 @@ async def fact(interaction: discord.Interaction):
     "Linux est utilisé sur la majorité des serveurs",
     "Les GPU sont plus rapides que les CPU pour l’IA",
     "Le premier ordinateur occupait une pièce entière",
-    "Lamig a déjà été gentil avec quelqu'un, c'était en 2020..."
+    "Lamig a déjà été gentil avec quelqu'un, c'était en 2020...",
+    "Le creeper était sensé etre un creeper"
 ]
     await interaction.response.send_message(random.choice(facts))
 
