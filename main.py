@@ -70,7 +70,7 @@ async def on_ready():
 @tree.command(name="regles", description="Règles du serveur")
 async def regles(interaction: discord.Interaction):
     await interaction.response.send_message(
-        "📜 RÈGLES :\n1. Respect\n2. Pas spam\n3. Amuse-toi 🤓\n4. Soyer Nerd🤓"
+        "📜 RÈGLES :\n1. Respect\n2. Pas spam\n3. Demandez l'autorisation pour faire des Pubs\n4. Soyer Nerd🤓"
     )
 
 
